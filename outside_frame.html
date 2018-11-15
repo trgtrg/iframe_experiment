@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<iframe id="inner_frame" src="javascript:void(0);"></iframe>
+
+<div id="js_console"></div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+        let frame = document.getElementById('inner_frame');
+        let fn = frame.contentWindow.console.log;
+        frame.contentWindow.console.log = function(message) {
+            document.getElementById('js_console').innerHTML += message + "<br/>";
+            return fn(message);
+        };
+
+        fetch('user_index.html')
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(text){
+                frame.contentWindow.document.open();
+                frame.contentWindow.document.write(text);
+                frame.contentWindow.document.close();
+            });
+
+        setTimeout(function () {
+            fetch('user_index2.html')
+                    .then(function(response) {
+                        return response.text();
+                    })
+                    .then(function(text){
+                        frame.contentWindow.document.open();
+                        frame.contentWindow.document.write(text);
+                        frame.contentWindow.document.close();
+                    });
+        }, 3000)
+    });
+</script>
+
+</body>
+</html>
